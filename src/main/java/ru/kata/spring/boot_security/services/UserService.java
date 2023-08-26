@@ -13,6 +13,8 @@ import ru.kata.spring.boot_security.configs.WebSecurityConfig;
 import ru.kata.spring.boot_security.dao.UserDao;
 import ru.kata.spring.boot_security.models.User;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -53,9 +55,10 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void saveUser(User user) {
-        user.setPassword(applicationContext.getBean(WebSecurityConfig.class)
-                .getPasswordEncoder()
-                .encode(user.getPassword()));
+//        user.setPassword(applicationContext.getBean(WebSecurityConfig.class)
+//                .getPasswordEncoder()
+//                .encode(user.getPassword()));
+        user.setPassword(encodePassword(user.getPassword()));
         userDao.saveUser(user);
 
     }
@@ -63,12 +66,17 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void updateUser(User user) {
-        user.setPassword(applicationContext.getBean(WebSecurityConfig.class)
-                .getPasswordEncoder()
-                .encode(user.getPassword()));
+        User existingUser = userDao.getUser(user.getId());
+        if (!user.getPassword().equals(existingUser.getPassword())) {
+            String encodedPassword = encodePassword(user.getPassword());
+            user.setPassword(encodedPassword);
+        }
         userDao.updateUser(user);
-
-
+    }
+    private String encodePassword(String password) {
+        return applicationContext.getBean(WebSecurityConfig.class)
+                .getPasswordEncoder()
+                .encode(password);
     }
 
 

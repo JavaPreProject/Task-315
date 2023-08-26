@@ -8,6 +8,13 @@ function getAllUsers() {
         loadTable(user))
 }
 
+function getUserPage() {
+    fetch(userUrl).then(response => response.json()).then(user =>
+        getInformationAboutUser(user))
+}
+
+
+
 function loadTable(listAllUsers) {
     let res = '';
     for (let user of listAllUsers) {
@@ -29,10 +36,7 @@ function loadTable(listAllUsers) {
     }
     document.getElementById('tableBodyAdmin').innerHTML = res;
 }
-function getUserPage() {
-    fetch(userUrl).then(response => response.json()).then(user =>
-        getInformationAboutUser(user))
-}
+
 
 function getInformationAboutUser(user) {
 
@@ -96,7 +100,7 @@ function editModal(id) {
             document.getElementById('editId').value = u.id;
             document.getElementById('editUserName').value = u.userName;
             document.getElementById('editAge').value = u.age;
-            document.getElementById('editPassword').value = "****";
+            document.getElementById('editPassword').value = u.password;
 
         })
     });
