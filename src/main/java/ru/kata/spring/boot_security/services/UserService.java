@@ -1,7 +1,7 @@
 package ru.kata.spring.boot_security.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.configs.WebSecurityConfig;
 import ru.kata.spring.boot_security.dao.UserDao;
 import ru.kata.spring.boot_security.models.User;
 
@@ -16,16 +17,16 @@ import java.util.List;
 
 @Service
 @Primary
-//@Transactional(readOnly = true)
 public class UserService implements UserDetailsService {
 
     private final UserDao userDao;
-    private final PasswordEncoder passwordEncoder;
+    //private final PasswordEncoder passwordEncoder;
+    private final ApplicationContext applicationContext;
 
     @Autowired
-    public UserService(UserDao userDao, @Lazy PasswordEncoder passwordEncoder) {
+    public UserService(UserDao userDao, ApplicationContext applicationContext) {
         this.userDao = userDao;
-        this.passwordEncoder = passwordEncoder;
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -52,7 +53,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(applicationContext.getBean(WebSecurityConfig.class)
+                .getPasswordEncoder()
+                .encode(user.getPassword()));
         userDao.saveUser(user);
 
     }
@@ -60,6 +63,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void updateUser(User user) {
+        user.setPassword(applicationContext.getBean(WebSecurityConfig.class)
+                .getPasswordEncoder()
+                .encode(user.getPassword()));
         userDao.updateUser(user);
 
 

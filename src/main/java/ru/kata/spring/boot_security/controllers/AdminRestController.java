@@ -13,38 +13,38 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminRestController {
-    private final UserService userServiceImpl;
+    private final UserService userService;
 
     @Autowired
-    public AdminRestController(UserService userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
+    public AdminRestController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping()
     public ResponseEntity<List<User>> showAllUsers() {
-        return new ResponseEntity<>(userServiceImpl.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return new ResponseEntity<>(userServiceImpl.getUser(id), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
     }
 
     @PostMapping()
     public ResponseEntity<HttpStatus> addNewUser(@RequestBody User user) {
-        userServiceImpl.saveUser(user);
+        userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> updateUser(@RequestBody User user, @PathVariable Long id) {
-        userServiceImpl.updateUser(user);
+        userService.updateUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
-        userServiceImpl.deleteUser(id);
+        userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

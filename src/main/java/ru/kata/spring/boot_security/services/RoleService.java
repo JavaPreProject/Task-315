@@ -10,7 +10,6 @@ import ru.kata.spring.boot_security.models.Role;
 import java.util.List;
 
 @Service
-//@Transactional(readOnly = true)
 public class RoleService {
 
     private final RoleDao roleDao;
